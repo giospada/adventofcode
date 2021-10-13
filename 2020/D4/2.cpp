@@ -4,9 +4,9 @@ using namespace std;
 
 class AttributoPasseggero{
     public:
-        AttributoPasseggero(bool req,bool (*fun)(string)): required(req) {}
+        AttributoPasseggero(bool req,function<bool(string)> fun): required(req),check(fun) {}
         bool required;
-        bool (*check)(string);
+        function<bool(string)> check;
 
 };
 
@@ -68,15 +68,29 @@ const map<string, AttributoPasseggero> Passeggero::all = {
     {"hgt", AttributoPasseggero(1,
                                 [](string input) -> bool
                                 {
-                                    vector<tuple<string, int, int>> v = {make_tuple("cm", 1, 1), make_tuple("in", 1, 1)};
-                                    for (auto i : v)
+                                    
+                                    vector<tuple<string, int, int>> v = {make_tuple("cm", 150, 193), make_tuple("in", 59, 76)};
+                                    try
                                     {
-                                        size_t pos = input.find_first_of(get<0>(i));
-                                        if (pos != string::npos)
+                                        for (auto i : v)
                                         {
+                                            size_t pos = input.find_first_of(get<0>(i));
+                                            if (pos != string::npos)
+                                            {
+                                                
+                                                int n = stoi(input.substr(0, pos));
+                                                if (get<1>(i) <= n and get<2>(i) >= n)
+                                                    return true;
+                                            }
                                         }
                                     }
+                                    catch (...)
+                                    {
+                                        return false;
+                                    }
+                                    return false;
                                 })},
+
     {"hcl", AttributoPasseggero(1,
                                 [](string input) -> bool
                                 {
@@ -96,7 +110,8 @@ const map<string, AttributoPasseggero> Passeggero::all = {
                                 [](string input) -> bool
                                 {
                                     regex exp("(\\d)+");
-                                    auto c = regex_match(input, exp);
+                                    return regex_match(input, exp) and input.size()==9;
+
                                 })},
     {"cid", AttributoPasseggero(0,
                                 [](string input) -> bool
@@ -116,17 +131,18 @@ bool Passeggero::checkValidFiled() const
     if (!checkFiled())
         return false;
 
+    bool allValid=true;
     for (map<string, AttributoPasseggero>::const_iterator i = all.begin(); i != all.end(); i++)
     {
-        if (values.count(i->first) == 1 and i->second.required == 1)
+        if (values.count(i->first) == 1)
         {
-            bool tempcheck = i->second.check(values.at(i->first));
-            if (!tempcheck)
-                return false;
+            string stringaDaCercare=values.at(i->first);
+
+            bool valid=i->second.check(stringaDaCercare);
+            allValid&=valid;
         }
     }
-
-    return true;
+    return allValid;
 }
 
 bool Passeggero::checkFiled() const
@@ -172,7 +188,7 @@ int main()
     {
         if (s == "")
         {
-            if (passeggero.checkFiled())
+            if (passeggero.checkValidFiled())
                 sol++;
             passeggero.clear();
         }
