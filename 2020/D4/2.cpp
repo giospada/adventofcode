@@ -20,13 +20,13 @@ class Passeggero{
 
         map<string,string> values;
         void readFromString(string input);
-        bool checkFiled() const;
-        bool checkValidFiled() const;
+        bool hasField() const;
+        bool isValidField() const;
         void clear();
 };
 
 const map<string, AttributoPasseggero> Passeggero::all = {
-    {"byr", AttributoPasseggero(1,
+    {"byr", AttributoPasseggero(true,
                                 [](string input) -> bool
                                 {
                                     try
@@ -39,7 +39,7 @@ const map<string, AttributoPasseggero> Passeggero::all = {
                                         return false;
                                     }
                                 })},
-    {"iyr", AttributoPasseggero(1,
+    {"iyr", AttributoPasseggero(true,
                                 [](string input) -> bool
                                 {
                                     try
@@ -52,7 +52,7 @@ const map<string, AttributoPasseggero> Passeggero::all = {
                                         return false;
                                     }
                                 })},
-    {"eyr", AttributoPasseggero(1,
+    {"eyr", AttributoPasseggero(true,
                                 [](string input) -> bool
                                 {
                                     try
@@ -65,7 +65,7 @@ const map<string, AttributoPasseggero> Passeggero::all = {
                                         return false;
                                     }
                                 })},
-    {"hgt", AttributoPasseggero(1,
+    {"hgt", AttributoPasseggero(true,
                                 [](string input) -> bool
                                 {
                                     
@@ -91,13 +91,13 @@ const map<string, AttributoPasseggero> Passeggero::all = {
                                     return false;
                                 })},
 
-    {"hcl", AttributoPasseggero(1,
+    {"hcl", AttributoPasseggero(true,
                                 [](string input) -> bool
                                 {
                                     regex exp("\\#[a-f0-9]{6}");
                                     return regex_match(input, exp);
                                 })},
-    {"ecl", AttributoPasseggero(1,
+    {"ecl", AttributoPasseggero(true,
                                 [](string input) -> bool
                                 {
                                     vector<string> s = {"amb", "blu", "brn", "gry", "grn", "hzl", "oth"};
@@ -106,14 +106,14 @@ const map<string, AttributoPasseggero> Passeggero::all = {
                                             return true;
                                     return false;
                                 })},
-    {"pid", AttributoPasseggero(1,
+    {"pid", AttributoPasseggero(true,
                                 [](string input) -> bool
                                 {
                                     regex exp("(\\d)+");
                                     return regex_match(input, exp) and input.size()==9;
 
                                 })},
-    {"cid", AttributoPasseggero(0,
+    {"cid", AttributoPasseggero(false,
                                 [](string input) -> bool
                                 {
                                     return true;
@@ -126,13 +126,13 @@ void Passeggero::clear()
     values.clear();
 }
 
-bool Passeggero::checkValidFiled() const
+bool Passeggero::isValidField() const
 {
-    if (!checkFiled())
+    if (!hasField())
         return false;
 
-    bool allValid=true;
-    for (map<string, AttributoPasseggero>::const_iterator i = all.begin(); i != all.end(); i++)
+    bool allValid = true;
+    for (auto i = all.begin(); i != all.end(); i++)
     {
         if (values.count(i->first) == 1)
         {
@@ -145,9 +145,9 @@ bool Passeggero::checkValidFiled() const
     return allValid;
 }
 
-bool Passeggero::checkFiled() const
+bool Passeggero::hasField() const
 {
-    for (map<string, AttributoPasseggero>::const_iterator i = all.begin(); i != all.end(); i++)
+    for (auto i = all.begin(); i != all.end(); i++)
     {
         if (values.count(i->first) == 0 and i->second.required == 1)
         {
@@ -188,8 +188,7 @@ int main()
     {
         if (s == "")
         {
-            if (passeggero.checkValidFiled())
-                sol++;
+            if (passeggero.isValidField()) sol++;
             passeggero.clear();
         }
         passeggero.readFromString(s);
