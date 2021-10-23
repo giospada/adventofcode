@@ -43,6 +43,8 @@ int main(){
     };
 
     //read input
+    
+    int riga=0;
     string s;
     while(cin >>s){
         int a;
