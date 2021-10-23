@@ -6,80 +6,73 @@ using namespace std;
 #define ll long long
 #define vtc vector
 
-#define LEN 36
 
-map<int,int> bitmap;
-map<int,string> mask;
-vtc<string> val;
-vtc<int> loc;
+#define NB 36
 
 
-void readinput(){
-    vector<string> v;
+string toBinary(int i){
+    int k=0; 
     string s;
-    while(getline(cin,s)){
-        v.push_back(s); 
-        int ib=0;
-        rep(i,s.size()){
-            char c=s[i];
-            if(c=='['){
-                ib=i;
-            }else if(c==']'){
-                loc.push_back(stoi(s.substr(ib+1,i-ib-1)));
-            }else if(c=='='){
-                val.push_back(s.substr(i+2,s.size()-i-2));
-                if(ib==0)
-                    loc.push_back(-1);
-                break;
-            }
-        }
-
+    rep(l,NB){
+        s+="0";
     }
-
+    while(i>0&&k<NB){
+        if(i%2==1){
+            s[NB-k-1]='1';
+        }
+        i/=2;
+        k++; 
+    }
+    return s;
 }
 
-ll applaymask(string s,int n,ll v){
-    vtc<int> allx;
+string applyMask(string mask,string binaryNum){
+    assert(mask.size()==binaryNum.size());
+    for(int i=0;i<mask.size();i++){
+        if(mask[i]=='1')
+            binaryNum[i]='1';
+        else if(mask[i]=='X')
+            binaryNum[i]='X';
+    }
+    return binaryNum;
+}
+
+
+int res(string s){
     ll sum=0;
-    rep(i,LEN){
-        if(s[LEN-i-1]=='X'){
-            allx.push_back((ll)1<<i); 
-            v|=((ll)1<<i);
-        }else if(s[LEN-i-1]=='1'){
-            v|=((ll)1<<i);
-        }
+    ll sumx=0;
+    ll n_x=0;
+    for(int i=NB-1;i>=0;i--){
+
     }
-    int len=allx.size();
-    for(ll i=0;i<((ll)1<<len);i++){
-        int cu=v;
-        rep(j,len)
-            if((ll)1<<j&i)
-                cu-=allx[j];
-        sum+=cu;
-    }
-    return sum;
+    return sumx*n_x+sum;
+
 }
 
 
 int main(){
-    readinput();
-
-    string lm;
-    rep(i,loc.size()){
-        if(loc[i]==-1){
-            lm=val[i];
-        }else{
-            mask[loc[i]]=lm;
-            bitmap[loc[i]]=i;
+    map<int,string> memo;
+    int memory_cell,val;
+    string curerntMask="";
+    string input;
+    while(getline(cin,input)){
+        if(input.find("mask")!=string::npos){
+            curerntMask=input.substr(input.size()-NB,input.size()-1);
+        }else if(input.find("mem")!=string::npos){
+            size_t i_parentesi=input.find("[");            
+            size_t f_parentesi=input.find("]");            
+            size_t i_numero=input.find("=");            
+            memory_cell=stoi(input.substr(i_parentesi+1,f_parentesi-i_parentesi));
+            val=stoi(input.substr(i_numero+2,input.size()-(i_numero+1)));
+            string binary=toBinary(val);
+            binary=applyMask(curerntMask,binary);
+            memo.insert({memory_cell,binary});
+            cout <<binary<<endl;
         }
     }
-
-    ll sum=0;
-    for(auto& c:bitmap){
-        int i=c.second;
-        ll l=stoll(val[i]);
-        sum+=applaymask(mask[c.first],loc[i],l);
+    long long res=0;
+    for(auto i:memo){
+    //    res=calc(i.second);
     }
-    printf("%lld",sum);
-
+    cout <<res<<endl;
 }

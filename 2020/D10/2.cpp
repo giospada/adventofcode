@@ -3,27 +3,29 @@
 using namespace std;
 
 vector<int> in;
-int all[4];
+vector<long long> dp;
+
 
 int main(){
     int a;
+    in.push_back(0);
+    dp.push_back(0);
     while(EOF!= scanf("%d",&a)){
         in.push_back(a);
+        dp.push_back(0);
     }
     sort(in.begin(),in.end());
     
     int last=0;
-    for(int i:in){
-        if(last-i<4){
-            all[i-last]++;
-            last=i;
-        }else{
-            break;
+    dp[0]=1;
+    for(int i=0;i<in.size();i++){
+        int addNext=i+1;
+        while(in.size()> addNext && in[i]+3>=in[addNext]){
+            dp[addNext]+=dp[i];
+            addNext++;
         }
     }
-    all[3]++;
-    printf("%d\n",all[1]*all[3]);
-
+    cout <<dp.back()<<endl;
 }
 
 

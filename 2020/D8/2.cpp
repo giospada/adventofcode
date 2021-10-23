@@ -10,6 +10,26 @@ using namespace std;
 vtc<ay<int,2>> inp;
 vtc<bool> done;
 
+//next jup or not
+vtc<int> nextJN;
+
+
+
+int find(int n){
+    if(uf[n]==n)return n;
+    else uf[n]=find(uf[n]);
+}
+
+int marge(int a,int b){
+    a=find(a);
+    b=find(b);
+    uf[a]=b;
+}
+
+int nextJmpNop(int from){
+
+}
+
 
 int main(){
     map<string,int> ins={
@@ -19,6 +39,8 @@ int main(){
     };
 
     //read input
+    
+    int riga=0;
     string s;
     while(cin >>s){
         int a;
@@ -32,6 +54,11 @@ int main(){
         }
     }
 
+    for(int i=0;i<inp.size();i++){
+        if(inp[i][0]=="nop" or inp[i][0]=="jmp"){
+            
+        }
+    }
 
     //emulte mashine
     int reg=0;
