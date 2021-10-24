@@ -4,6 +4,7 @@ using namespace std;
 
 typedef long long ll;
 #define rep(i,n) for(int i=0;i<n;i++)
+#define repl(i,n) for(ll i=0;i<n;i++)
 #define fep(i,j,n) for(int i=j;i<n;i++)
 typedef array<int,2> ii;
 #define MOD 1000000007
@@ -15,42 +16,42 @@ int LSB(int x){return x&-x;}
 
 struct MemoryGame
 {
-    vector<int> starting_numbers;
-    map<int,int> memo;
-    int currentStep;
-    int last;
+    vector<ll> starting_numbers;
+    map<ll,ll> memo;
+    ll currentStep;
+    ll last;
 
-    MemoryGame(vector<int> start):starting_numbers{start}{
-        currentStep=1;
+    MemoryGame(vector<ll> start):starting_numbers{start}{
+        currentStep=0;
         last=starting_numbers.front();
     }
 
-    int doTurnsForward(int numStep){
-        rep(i,numStep){
+    ll doTurnsForward(ll numStep){
+        repl(i,numStep){
             nextTurn();
         }
         return lastVal();
     }
 
-    int lastVal(){
+    ll lastVal(){
         return last;
     }
 
     void reset(){
         memo.clear();
-        currentStep=1;
+        currentStep=0;
     }
 
     void nextTurn(){
-        int newLast=0;
+        ll newLast=0;
         auto posInMemo=memo.find(last);
         if(posInMemo!=memo.end()){
-            newLast=currentStep-posInMemo->first;
+            newLast=currentStep-posInMemo->second;
         }
-        if(currentStep<starting_numbers.size()){
+        if(currentStep<starting_numbers.size()-1){
             newLast=starting_numbers[currentStep+1];
         }
-        if(posInMemo!=memo.end()) memo.insert({last,currentStep});
+        if(posInMemo==memo.end()) memo.insert({last,currentStep});
         else memo[posInMemo->first]=currentStep;
         currentStep++;
         last=newLast;
@@ -59,8 +60,7 @@ struct MemoryGame
 
 
 
-
-int main(){
+void test(){
     MemoryGame test({0,3,6});
     assert(test.lastVal()==0);
     test.nextTurn();
@@ -70,17 +70,28 @@ int main(){
     test.nextTurn();
     assert(test.lastVal()==0);
     test.nextTurn();
-    assert(test.lastVal()==5);
+    assert(test.lastVal()==3);
     test.nextTurn();
+    assert(test.lastVal()==3);
+    test.nextTurn();
+    assert(test.lastVal()==1);
+    test.nextTurn();
+    assert(test.lastVal()==0);
+    test.nextTurn();
+    assert(test.lastVal()==4);
+    test.nextTurn();
+    assert(test.lastVal()==0);
+    test.nextTurn();
+}
 
-    return  0;
-    int n;
-    vector<int> starting;
-    while(cin >>n){
-        starting.push_back(n);
+int main(){
+    
+    vector<ll> starting;
+    string s;
+    while(getline(cin,s,',')){
+        starting.push_back(stol(s));
     }
-
     MemoryGame game(starting);
-    cout <<game.doTurnsForward(2020)<<endl ;
+    cout <<game.doTurnsForward(30000000-1)<<endl ;
 
 }
