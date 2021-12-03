@@ -24,7 +24,7 @@ struct FieldVerification{
         range[3]=i4;
     }
     bool verify(int val){
-        return (range[0]>=val and val<=range[1]) or (range[2]>=val and val<=range[3]);
+        return (range[0]<=val and val<=range[1]) or (range[2]<=val and val<=range[3]);
     }
 };
 
@@ -36,12 +36,12 @@ struct Ticket{
     int sumIncorretFiled(vector<FieldVerification> ver){
         int sum=0;
         for(auto fil:field ){
-            bool alltrue=false;
-            for(auto c:ver)
-                alltrue|=c.verify(fil);
-            if(!alltrue){
+            bool extrue=false;
+            for(auto c:ver){
+                extrue|=c.verify(fil);
+            }
+            if(!extrue){
                 sum+=fil;
-                cout <<fil<<endl;
             }
         }
         return sum;
@@ -75,6 +75,7 @@ void readInput(vector<FieldVerification> &filed,vector<Ticket> &tikets){
             std::smatch match = *i;
             fields.push_back(stoi(match.str()));
         }
+        
         if (fields.size() > 0) {
             tikets.emplace_back(fields);
         }
