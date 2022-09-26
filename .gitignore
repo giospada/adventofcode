@@ -3,6 +3,8 @@
 2019/
 # But not .cpp
 !*.cpp
+!*.rs
+!*.toml
 # Or directories
 !*/
 !.gitignore
