@@ -1,5 +1,4 @@
-use std::fs;
-
+use std::{collections::BTreeSet, fs};
 const FILE_INPUT: &str = "input.txt";
 
 type Input = Vec<Vec<i32>>;
@@ -24,25 +23,24 @@ fn inputReading() -> Input {
 }
 
 fn fstar(input: Input) -> i32 {
-        input.into_iter()
-            .map(|a| a.into_iter().sum::<i32>())
-            .into_iter()
-            .max()
-            .unwrap()
+    input
+        .into_iter()
+        .map(|a| a.into_iter().sum::<i32>())
+        .into_iter()
+        .max()
+        .unwrap()
 }
 fn sstar(input: Input) -> i32 {
-        let mut arr:Vec<i32>=input.into_iter()
-            .map(|a| a.into_iter().sum::<i32>()).collect();
-        arr.sort();
-        let mut sum = 0;
-        for i in 1..4 {
-            sum = sum + arr[arr.len()-i];   
-        }
-        sum 
+    let mut array = input
+        .into_iter()
+        .map(|a| a.into_iter().sum::<i32>())
+        .collect::<Vec<i32>>();
+    array.sort();
+    array.into_iter().rev().take(3).sum()
 }
 
 fn main() {
     let input = inputReading();
-    println!("first star:{}",fstar(input.clone()));
-    println!("second start : {} \n",sstar(input.clone()));
+    println!("first star:{}", fstar(input.clone()));
+    println!("second start : {} \n", sstar(input.clone()));
 }
