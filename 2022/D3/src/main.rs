@@ -60,21 +60,23 @@ fn inputReading2() -> Input2 {
 fn fstar(input: Input) -> i32 {
     use std::collections::BTreeSet;
     input
-        .iter()
+        .into_iter()
         .map(|x| {
             let mut set = BTreeSet::new();
             x[0].iter().for_each(|x| {
                 set.insert(x);
             });
 
-            let mut sum = 0;
-            x[1].iter().for_each(|x| {
-                if set.contains(x) {
-                    sum = sum + x;
-                    set.remove(x);
-                }
-            });
-            sum
+            x[1].iter()
+                .map(|x| {
+                    if set.contains(x) {
+                        set.remove(x);
+                        x.clone()
+                    } else {
+                        0
+                    }
+                })
+                .sum::<i32>()
         })
         .sum()
 }
